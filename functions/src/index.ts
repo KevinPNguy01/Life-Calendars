@@ -7,8 +7,7 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+import { onRequest } from "firebase-functions/v2/https";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -17,3 +16,52 @@ import * as logger from "firebase-functions/logger";
 //   logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
 // });
+
+export const graphqlProxy = onRequest(async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+
+    if (req.method === "OPTIONS") {
+        // Send response to OPTIONS requests
+        res.set("Access-Control-Allow-Methods", "GET");
+        res.set("Access-Control-Allow-Headers", "Content-Type");
+        res.set("Access-Control-Max-Age", "3600");
+        res.status(204).send("");
+        return;
+    }
+
+    // Ensure this function only responds to POST requests
+    if (req.method !== "POST") {
+        res.status(405).send({ error: "Method Not Allowed" });
+        return;
+    }
+
+    const { endpoint, query, variables } = req.body;
+
+    // Validate the incoming request body
+    if (!endpoint || !query) {
+        res.status(400).send({ error: "Missing 'endpoint' or 'query' in request body" });
+        return;
+    }
+
+    try {
+        // Forward the GraphQL query to the specified endpoint
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            // Add any default headers if necessary (e.g., authentication tokens)
+            // Example: Authorization: "Bearer YOUR_API_KEY_IF_NEEDED"
+            },
+            body: JSON.stringify({ query, variables }),
+        });
+
+        // Parse the response from the GraphQL server
+        const data = await response.json();
+
+        // Forward the response back to the client
+        res.status(response.status).send(data);
+    } catch (error) {
+        console.error("Error proxying GraphQL query:", error);
+        res.status(500).send({ error: "Internal server error" });
+    }
+});
