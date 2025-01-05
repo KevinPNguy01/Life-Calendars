@@ -21,7 +21,6 @@ export const fetchGithub = async (year: number) => {
 			}
 		}
 	}`;
-	console.log(query)
 	const response = await fetch(graphqlUrl, {
 		method: "POST",
 		headers: { 
@@ -43,7 +42,7 @@ export const parseGithub = (user: User) => {
 	user.contributionsCollection.contributionCalendar.weeks.forEach(
 		(week, weekIndex) => week.contributionDays.forEach(
 			(day, dayIndex) => {
-				const index = weekIndex * 7 + dayIndex - start.getUTCDay();
+				const index = weekIndex * 7 + dayIndex - (weekIndex === 0 ? 0 : start.getUTCDay());
 				const time = Math.floor(start.getTime() / 1000) + index * 24 * 60 * 60;
 				const contributions = day.contributionCount;
 				if (contributions > 0) {

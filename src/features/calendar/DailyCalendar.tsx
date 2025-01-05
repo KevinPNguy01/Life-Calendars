@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchGithub, parseGithub } from "../../api/github";
 import { DailyMonth } from "./DailyMonth";
 
-export function DailyCalendar({year, data}: {year: number, data: Record<string, number>}) {
+export function DailyCalendar({year, data, colors}: {year: number, data: Record<string, number>, colors: [number, string][]}) {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     return (
@@ -15,7 +15,7 @@ export function DailyCalendar({year, data}: {year: number, data: Record<string, 
                 const numWeeks = Math.ceil((numDays + offSet) / 7);
                 return (
                     <div key={month} className="flex flex-col items-center">
-                        <DailyMonth start={start} data={data} offSet={offSet} numDays={numDays} numWeeks={numWeeks}/>
+                        <DailyMonth start={start} data={data} offSet={offSet} numDays={numDays} numWeeks={numWeeks} colors={colors}/>
                         {month}
                     </div>
                 );

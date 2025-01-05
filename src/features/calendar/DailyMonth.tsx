@@ -1,4 +1,4 @@
-export function DailyMonth({start, data, offSet, numDays, numWeeks}: {start: Date, data: Record<string, number>, offSet: number, numDays: number, numWeeks: number}) {
+export function DailyMonth({start, data, offSet, numDays, numWeeks, colors}: {start: Date, data: Record<string, number>, offSet: number, numDays: number, numWeeks: number, colors: [number, string][]}) {
 	return (
         <table className="border-separate border-spacing-[0.1875rem]">
 			<tbody>
@@ -9,7 +9,12 @@ export function DailyMonth({start, data, offSet, numDays, numWeeks}: {start: Dat
 							const time = Math.floor(start.getTime() / 1000) + (index - offSet) * 24 * 60 * 60;
 							const bg = index >= offSet && index - offSet < numDays ? time in data ? "" : "!bg-tertiary" : "!bg-secondary";
 							const count = time in data ? data[time] : 0;
-							const color = count < 3 ? "#006620" : count < 5 ? "#019927" : count < 10 ? "#24c241" : "#7be187";
+							let color = "";
+							colors.forEach(([val, col]) => {
+								if (count >= val) {
+									color = col;
+								}
+							});
 							return (
 								<td
 									className={`p-1.5 rounded-sm ${bg}`}
