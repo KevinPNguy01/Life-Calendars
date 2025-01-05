@@ -7,16 +7,19 @@ const query = `query userProfileCalendar($username: String!, $year: Int) {
     }
   }
 }`;
-const variables = `{"username": "nguyk1", "year": 2024}`;
+const variables = ``;
 
-export const fetchLeetcode = async () => {
+export const fetchLeetcode = async (year: number) => {
     const response = await fetch(graphqlUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             endpoint,
             query,
-            variables
+            variables: {
+              "username": "nguyk1", 
+              "year": year
+            }
         }),
     });
     const json = await response.json();

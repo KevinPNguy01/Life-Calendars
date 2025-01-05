@@ -2,15 +2,8 @@ import { useEffect, useState } from "react";
 import { fetchGithub, parseGithub } from "../../api/github";
 import { DailyMonth } from "./DailyMonth";
 
-export function DailyCalendar({year}: {year: number}) {
+export function DailyCalendar({year, data}: {year: number, data: Record<string, number>}) {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const [submissions, setSubmissions] = useState<Record<string, number>>({});
-
-    useEffect(() => {(async () => {
-        //const data = await fetchLeetcode();
-        const data = parseGithub((await fetchGithub()).data.viewer);
-        setSubmissions(data);
-    })()}, []);
     
     return (
         <div className="flex gap-2 w-full h-full justify-center items-center">
@@ -22,7 +15,7 @@ export function DailyCalendar({year}: {year: number}) {
                 const numWeeks = Math.ceil((numDays + offSet) / 7);
                 return (
                     <div key={month} className="flex flex-col items-center">
-                        <DailyMonth start={start} submissions={submissions} offSet={offSet} numDays={numDays} numWeeks={numWeeks}/>
+                        <DailyMonth start={start} data={data} offSet={offSet} numDays={numDays} numWeeks={numWeeks}/>
                         {month}
                     </div>
                 );
