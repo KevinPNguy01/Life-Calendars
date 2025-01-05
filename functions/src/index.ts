@@ -23,7 +23,7 @@ export const graphqlProxy = onRequest(async (req, res) => {
     if (req.method === "OPTIONS") {
         // Send response to OPTIONS requests
         res.set("Access-Control-Allow-Methods", "GET");
-        res.set("Access-Control-Allow-Headers", "Content-Type");
+        res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
         res.set("Access-Control-Max-Age", "3600");
         res.status(204).send("");
         return;
@@ -44,13 +44,14 @@ export const graphqlProxy = onRequest(async (req, res) => {
     }
 
     try {
+        const authHeader = req.headers.authorization || "";
+
         // Forward the GraphQL query to the specified endpoint
         const response = await fetch(endpoint, {
             method: "POST",
             headers: {
-            "Content-Type": "application/json",
-            // Add any default headers if necessary (e.g., authentication tokens)
-            // Example: Authorization: "Bearer YOUR_API_KEY_IF_NEEDED"
+                "Content-Type": "application/json",
+                "Authorization": authHeader
             },
             body: JSON.stringify({ query, variables }),
         });

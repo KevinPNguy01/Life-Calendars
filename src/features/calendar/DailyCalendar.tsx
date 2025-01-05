@@ -1,33 +1,14 @@
 import { useEffect, useState } from "react";
+import { fetchGithub, parseGithub } from "../../api/github";
 import { DailyMonth } from "./DailyMonth";
-
-const graphqlUrl = "https://us-central1-kevins-life-stats.cloudfunctions.net/graphqlProxy";
-const endpoint = `https://leetcode.com/graphql`;
-const query = `query userProfileCalendar($username: String!, $year: Int) {
-  matchedUser(username: $username) {
-    userCalendar(year: $year) {
-      submissionCalendar
-    }
-  }
-}`;
-const variables = `{"username": "nguyk1", "year": 2024}`;
 
 export function DailyCalendar({year}: {year: number}) {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const [submissions, setSubmissions] = useState<Record<string, number>>({});
 
     useEffect(() => {(async () => {
-        const response = await fetch(graphqlUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                endpoint,
-                query,
-                variables
-            }),
-        });
-        const json = await response.json();
-        const data = JSON.parse(json.data.matchedUser.userCalendar.submissionCalendar);
+        //const data = await fetchLeetcode();
+        const data = parseGithub((await fetchGithub()).data.viewer);
         setSubmissions(data);
     })()}, []);
     
