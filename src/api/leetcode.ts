@@ -7,7 +7,6 @@ const query = `query userProfileCalendar($username: String!, $year: Int) {
     }
   }
 }`;
-const variables = ``;
 
 export const fetchLeetcode = async (year: number) => {
     const response = await fetch(graphqlUrl, {
