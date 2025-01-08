@@ -8,16 +8,9 @@
  */
 
 import { onRequest } from "firebase-functions/v2/https";
+import { getStravaActivities } from "./strava";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
-export const graphqlProxy = onRequest(async (req, res) => {
+const graphqlProxy = onRequest(async (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
 
     if (req.method === "OPTIONS") {
@@ -66,3 +59,5 @@ export const graphqlProxy = onRequest(async (req, res) => {
         res.status(500).send({ error: "Internal server error" });
     }
 });
+
+export {graphqlProxy, getStravaActivities};
