@@ -22,7 +22,7 @@ export function LeetCodeStats({startDate, endDate}: {startDate: Date, endDate: D
 
     return (
         <div>
-            <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors}/>
+            <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors} unit={"submissions"}/>
         </div>
     );
 }

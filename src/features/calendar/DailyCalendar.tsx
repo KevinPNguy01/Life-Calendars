@@ -1,6 +1,6 @@
 import { DailyMonth } from "./DailyMonth";
 
-export function DailyCalendar({startDate, endDate, data, colors}: {startDate: Date, endDate: Date, data: Record<string, number>, colors: [number, string][]}) {
+export function DailyCalendar({startDate, endDate, data, colors, unit}: {startDate: Date, endDate: Date, data: Record<string, number>, colors: [number, string][], unit: string}) {
     const months: number[] = [];
     const startYear = startDate.getUTCFullYear();
     for (let i = startDate.getUTCMonth(); Date.UTC(startYear, i) < endDate.getTime(); ++i) {
@@ -17,7 +17,7 @@ export function DailyCalendar({startDate, endDate, data, colors}: {startDate: Da
                 const numWeeks = Math.ceil((numDays + offSet) / 7);
                 return (
                     <div key={index} className="flex flex-col items-center">
-                        <DailyMonth start={start} data={data} offSet={offSet} numDays={numDays} numWeeks={numWeeks} colors={colors}/>
+                        <DailyMonth start={start} data={data} offSet={offSet} numDays={numDays} numWeeks={numWeeks} colors={colors} unit={unit}/>
                         {start.toLocaleString('default', { timeZone: 'UTC', month: 'short' })}
                     </div>
                 );
