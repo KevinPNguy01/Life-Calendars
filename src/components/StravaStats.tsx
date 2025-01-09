@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchLeetcode } from "../api/leetcode";
 import { DailyCalendar } from "../features/calendar/DailyCalendar";
-import { fetchGithub, parseGithub } from "../api/github";
 import { fetchStrava, parseStrava } from "../api/strava";
 
 const colors: [number, string][] = [

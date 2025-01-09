@@ -1,12 +1,13 @@
 import { onRequest } from "firebase-functions/https";
 import { db } from "./firebase";
-import { getDoc, doc, setDoc, writeBatch, DocumentSnapshot, collection, getDocs } from "firebase/firestore";
+import { getDoc, doc, setDoc, updateDoc, Timestamp} from "firebase/firestore";
 import axios from "axios";
 import { StravaActivity } from "./types/strava_types";
 import { error } from "firebase-functions/logger";
 
 const clientId = process.env.STRAVA_CLIENT_ID;
 const clientSecret = process.env.STRAVA_CLIENT_SECRET;
+const athleteId = "56713265";
 
 export const getStravaActivities = onRequest(async (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
@@ -25,20 +26,20 @@ export const getStravaActivities = onRequest(async (req, res) => {
 
     const accessToken = await getAccessToken();
     await cacheActivities(await fetchActivities(accessToken));
-    const data = await retrieveCachedActivities();
+    const data = await getStravaCalendar();
     res.status(200).send(data);
 });
 
 async function getAccessToken() {
-    const authDoc = doc(db, "stravaUserAuth", "KNKevin");
-    const docRef = await getDoc(authDoc);
-    if (!docRef.exists()) {
+    const userDocRef = doc(db, "stravaUsers", athleteId);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
         throw error("Document not found");
     }
+    let {accessToken, refreshToken, expiresAt} = userDoc.data() as {accessToken: string, refreshToken: string, expiresAt: number};
 
-    let {accessToken, refreshToken, expiresAt} = docRef.data() as {accessToken: string, refreshToken: string, expiresAt: number};
+    // Refresh access token if it is expired
     const currentTime = Math.floor(Date.now() / 1000);
-
     if (currentTime > expiresAt) {
         const response = await axios.post('https://www.strava.com/oauth/token', {
             client_id: clientId,
@@ -49,55 +50,77 @@ async function getAccessToken() {
         accessToken = response.data.access_token;
         refreshToken = response.data.refresh_token;
         expiresAt = response.data.expires_at;
-        setDoc(authDoc, {accessToken, refreshToken, expiresAt})
+        setDoc(userDocRef, {accessToken, refreshToken, expiresAt}, {merge: true})
     }
 
     return accessToken;
 }
 
+/**
+ * Fetch activities until the oldest fetched is already in the database.
+ * @param accessToken The token uses to authenticate to Strava.
+ * @returns A list Strava activities.
+ */
 async function fetchActivities(accessToken: string) {
     const activities: StravaActivity[] = [];
     let page = 1;
     const perPage = 100; // Max allowed by Strava API
 
-    let lastActivity: DocumentSnapshot;
-    while (page <= 1 || !lastActivity!.exists()) {
-        const response = await axios.get<StravaActivity[]>(`${"https://www.strava.com/api/v3"}/athlete/activities`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-            params: {
-                page,
-                per_page: perPage,
-            },
+    const docRef = doc(db, "stravaUsers", athleteId);
+    const userDoc = await getDoc(docRef);
+    const calendarData = (userDoc.data()?.calendar || {}) as Record<string, {start_date: Date, distance: number}>;
+
+    // Fetch just the first page or until the oldest activity is found in the database.
+    while (true) {
+        const response = await axios.get<StravaActivity[]>("https://www.strava.com/api/v3/athlete/activities", {
+            headers: {Authorization: `Bearer ${accessToken}`,},
+            params: {page, per_page: perPage,},
         });
-
-        if (response.data.length === 0) break;
-
+        const data = response.data;
+        if (data.length === 0) break;                           // Break if no activities were retrieved.
+        if (`${response.data[0].id}` in calendarData) break;    // Break if the most recent activity is already in the database.
         activities.push(...response.data);
+        if (`${data[data.length-1].id}` in calendarData) break; // Break if the last activity is already in the database.
         page += 1;
-
-        lastActivity = await getDoc(doc(db, "stravaActivities", `${activities[activities.length-1].upload_id}`));
     }
 
     return activities;
 }
 
 async function cacheActivities(activities: StravaActivity[]) {
-    for (let i = 0; i < activities.length; i += 500) {
-        const batchDb = writeBatch(db);
-        for (let j = 0; j < 500 && i + j < activities.length; ++ j) {
-            const activity = activities[i + j];
-            const docRef = doc(db, "stravaActivities", `${activity.upload_id}`);
-            batchDb.set(docRef, activity);
+    const docRef = doc(db, "stravaUsers", athleteId);
+    const userDoc = await getDoc(docRef);
+    const calendarData = (userDoc.data()?.calendar || {}) as Record<string, {start_date: Date, distance: number}>;
+
+    for (const activity of activities) {
+        calendarData[`${activity.id}`] = {
+            start_date: new Date(activity.start_date_local),
+            distance: activity.distance
         }
-        await batchDb.commit();
     }
+
+    updateDoc(docRef, {calendar: calendarData});
 }
 
-async function retrieveCachedActivities() {
-    const activityDocs = await getDocs(collection(db, "stravaActivities"));
-    const activities: StravaActivity[] = [];
-    activityDocs.forEach(doc => activities.push(doc.data() as StravaActivity));
-    return activities;
+async function getStravaCalendar() {
+    const stravaCalendar: Record<string, number> = {};
+    const docRef = doc(db, "stravaUsers", athleteId);
+    const userDoc = await getDoc(docRef);
+    const calendarData = (userDoc.data()?.calendar || {}) as Record<string, {start_date: Timestamp, distance: number}>;
+    for (const activity of Object.values(calendarData)) {
+        const originalDate = activity.start_date.toDate();
+
+        const year = originalDate.getUTCFullYear();
+        const month = originalDate.getUTCMonth();
+        const day = originalDate.getUTCDate();
+
+        const time = new Date(Date.UTC(year, month, day)).getTime() / 1000;
+        const key = `${time}`;
+
+        if (!(key in stravaCalendar)) {
+            stravaCalendar[key] = 0;
+        }
+        stravaCalendar[key] += activity.distance;
+    }
+    return stravaCalendar;
 }
