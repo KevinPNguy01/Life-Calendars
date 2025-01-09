@@ -36,9 +36,8 @@ export const fetchGithub = async (year: number) => {
 	return json;
 };
 
-export const parseGithub = (user: User) => {
+export const parseGithub = (user: User, start: Date) => {
 	const data: Record<string, number> = {};
-	const start = new Date(Date.UTC(2024, 0, 1));
 	user.contributionsCollection.contributionCalendar.weeks.forEach(
 		(week, weekIndex) => week.contributionDays.forEach(
 			(day, dayIndex) => {

@@ -1,6 +1,6 @@
 const apiUrl = "https://getstravaactivities-zxhhhobsqq-uc.a.run.app";
 
-export const fetchStrava = async (year: number) => {
+export const fetchStrava = async () => {
     const response = await fetch(apiUrl, { method: "GET"});
     const data = await response.json() as Record<string, number>;
     return data;

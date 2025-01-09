@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { fetchLeetcode } from "../api/leetcode";
 import { DailyCalendar } from "../features/calendar/DailyCalendar";
 import { fetchGithub, parseGithub } from "../api/github";
 
@@ -10,17 +9,20 @@ const colors: [number, string][] = [
     [10, "#8EB7F6"]
 ];
 
-export function GitHubStats({year}: {year: number}) {
+export function GitHubStats({startDate, endDate}: {startDate: Date, endDate: Date}) {
     const [data, setData] = useState<Record<string, number>>({});
     
     useEffect(() => {(async () => {
-        const data = await fetchGithub(year);
-        setData(parseGithub(data.data.viewer));
+        const data = {};
+        for (let year = startDate.getUTCFullYear(); year <= endDate.getUTCFullYear(); ++ year) {
+            Object.assign(data, parseGithub((await fetchGithub(year)).data.viewer, new Date(Date.UTC(year, 0))));
+        }
+        setData(data);
     })()}, []);
 
     return (
         <div>
-            <DailyCalendar year={year} data={data} colors={colors}/>
+            <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors}/>
         </div>
     );
 }

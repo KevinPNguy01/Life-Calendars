@@ -9,17 +9,17 @@ const colors: [number, string][] = [
     [10, "#FEAA86"]
 ];
 
-export function StravaStats({year}: {year: number}) {
+export function StravaStats({startDate, endDate}: {startDate: Date, endDate: Date}) {
     const [data, setData] = useState<Record<string, number>>({});
     
     useEffect(() => {(async () => {
-        const data = await fetchStrava(year);
+        const data = await fetchStrava();
         setData(parseStrava(data));
     })()}, []);
 
     return (
         <div>
-            <DailyCalendar year={year} data={data} colors={colors}/>
+            <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors}/>
         </div>
     );
 }
