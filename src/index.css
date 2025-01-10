@@ -4,15 +4,15 @@
 
 :root {
   --color-primary: #080;
-  --color-secondary: rgb(48, 48, 48);
-  --color-tertiary: rgb(64, 64, 64);
-  --color-quaternary: rgb(80, 80, 80);
+  --color-secondary: #333;
+  --color-tertiary: #444;
+  --color-quaternary: #555;
   --color-dim-white: rgb(208, 208, 208);
   --color-dark: rgb(32, 32, 32);
 }
 
 body {
-    background-color: var(--color-secondary);
+    background-color: var(--color-dark);
 }
 
 @layer utilities {

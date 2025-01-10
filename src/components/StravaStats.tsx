@@ -18,6 +18,6 @@ export function StravaStats({startDate, endDate}: {startDate: Date, endDate: Dat
     })()}, []);
 
     return (
-        <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors} unit={"miles run"} showMonths={false}/>
+        <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors} unit={"miles run"} showMonths/>
     );
 }

@@ -21,6 +21,6 @@ export function GitHubStats({startDate, endDate}: {startDate: Date, endDate: Dat
     })()}, [startDate, endDate]);
 
     return (
-        <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors} unit={"commits"} showMonths={false}/>
+        <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors} unit={"commits"} showMonths/>
     );
 }

@@ -7,6 +7,8 @@ import StravaLogo from './assets/strava_logo.png';
 import Select, { SelectChangeEvent } from '@mui/material/Select/Select';
 import MenuItem from '@mui/material/MenuItem/MenuItem';
 import { useState } from 'react';
+import { ThemeProvider } from '@mui/material';
+import { theme } from './theme';
 
 function App() {
 	const temp = new Date();
@@ -26,28 +28,39 @@ function App() {
 	}
 
 	return (
-		<div className="w-screen h-screen flex flex-col items-center justify-center">
-			<div>
-				<Select
-					labelId="time-period-label"
-					onChange={handleChange}
-					value={value}
-				>
-					<MenuItem value={-1}>Past Year</MenuItem>
-					{Array.from({ length: temp.getFullYear() - 2018}, (_, i) => temp.getFullYear() - i).map(
-						year => <MenuItem key={year} value={year}>{year}</MenuItem>
-					)}
-				</Select>
+		<ThemeProvider theme={theme}>
+			<div className="w-screen h-screen flex flex-col items-center justify-center gap-4">
+				<div>
+					<Select
+						className="!bg-tertiary rounded"
+						variant="standard"
+						disableUnderline
+						sx={{
+							'& .MuiSelect-select': {
+							   paddingX: 1.5,
+							   paddingY: 0.5
+							}
+						}}
+						labelId="time-period-label"
+						onChange={handleChange}
+						value={value}
+					>
+						<MenuItem value={-1}>Past Year</MenuItem>
+						{Array.from({ length: temp.getFullYear() - 2018}, (_, i) => temp.getFullYear() - i).map(
+							year => <MenuItem key={year} value={year}>{year}</MenuItem>
+						)}
+					</Select>
+				</div>
+				<div className="text-white grid grid-cols-[auto,1fr] place-items-center gap-x-8 gap-y-4">
+					<img className="h-8" src={StravaLogo}/>
+					<StravaStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
+					<img className="h-12" src={LeetCodeLogo}/>
+					<LeetCodeStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
+					<img className="h-12" src={GitHubLogo}/>
+					<GitHubStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
+				</div>
 			</div>
-			<div className="text-white grid grid-cols-[auto,1fr] place-items-center gap-x-8 gap-y-4">
-				<img className="h-8" src={StravaLogo}/>
-				<StravaStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
-				<img className="h-12" src={LeetCodeLogo}/>
-				<LeetCodeStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
-				<img className="h-12" src={GitHubLogo}/>
-				<GitHubStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
-			</div>
-		</div>
+		</ThemeProvider>
 	);
 }
 
