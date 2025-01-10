@@ -1,6 +1,6 @@
 import { DailyMonth } from "./DailyMonth";
 
-export function DailyCalendar({startDate, endDate, data, colors, unit}: {startDate: Date, endDate: Date, data: Record<string, number>, colors: [number, string][], unit: string}) {
+export function DailyCalendar({startDate, endDate, data, colors, unit, showMonths}: {startDate: Date, endDate: Date, data: Record<string, number>, colors: [number, string][], unit: string, showMonths: boolean}) {
     const months: number[] = [];
     const startYear = startDate.getUTCFullYear();
     for (let i = startDate.getUTCMonth(); Date.UTC(startYear, i) < endDate.getTime(); ++i) {
@@ -8,7 +8,7 @@ export function DailyCalendar({startDate, endDate, data, colors, unit}: {startDa
     }
     
     return (
-        <div className="flex gap-2 w-full h-full justify-center items-center">
+        <div className="w-fit h-fit flex gap-2 justify-center items-center">
             {months.map((index) => {
                 const start = new Date(Math.max(startDate.getTime(), Date.UTC(startYear, index)));
                 const end = new Date(Math.min(endDate.getTime(), Date.UTC(startYear, index + 1)));                
@@ -16,9 +16,9 @@ export function DailyCalendar({startDate, endDate, data, colors, unit}: {startDa
                 const numDays = Math.floor((+end - +start) / (1000 * 3600 * 24));
                 const numWeeks = Math.ceil((numDays + offSet) / 7);
                 return (
-                    <div key={index} className="flex flex-col items-center">
+                    <div key={index} className="flex flex-col items-center gap-2">
                         <DailyMonth start={start} data={data} offSet={offSet} numDays={numDays} numWeeks={numWeeks} colors={colors} unit={unit}/>
-                        {start.toLocaleString('default', { timeZone: 'UTC', month: 'short' })}
+                        {showMonths && start.toLocaleString('default', { timeZone: 'UTC', month: 'short' })}
                     </div>
                 );
             })}

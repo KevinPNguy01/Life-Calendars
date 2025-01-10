@@ -8,54 +8,63 @@
   --color-tertiary: rgb(64, 64, 64);
   --color-quaternary: rgb(80, 80, 80);
   --color-dim-white: rgb(208, 208, 208);
+  --color-dark: rgb(32, 32, 32);
+}
+
+body {
+    background-color: var(--color-secondary);
 }
 
 @layer utilities {
-  .bg-primary {
-      background: var(--color-primary);
-  }
+    .bg-primary {
+        background: var(--color-primary);
+    }
 
-  .bg-secondary {
-      background: var(--color-secondary);
-  }
+    .bg-secondary {
+        background: var(--color-secondary);
+    }
 
-  .bg-tertiary {
-      background: var(--color-tertiary);
-  }
+    .bg-tertiary {
+        background: var(--color-tertiary);
+    }
 
-  .bg-quaternary {
-      background: var(--color-quaternary);
-  }
+    .bg-quaternary {
+        background: var(--color-quaternary);
+    }
 
-  .border-primary {
-      border-color: var(--color-primary);
-  }
+    .bg-dark {
+        background: var(--color-dark);
+    }
 
-  .border-secondary {
-      border-color: var(--color-secondary);
-  }
+    .border-primary {
+        border-color: var(--color-primary);
+    }
 
-  .border-tertiary {
-      border-color: var(--color-tertiary);
-  }
+    .border-secondary {
+        border-color: var(--color-secondary);
+    }
 
-  .border-quaternary {
-      border-color: var(--color-quaternary);
-  }
+    .border-tertiary {
+        border-color: var(--color-tertiary);
+    }
 
-  .text-primary {
-      color: var(--color-primary);
-  }
+    .border-quaternary {
+        border-color: var(--color-quaternary);
+    }
 
-  .text-secondary {
-      color: var(--color-secondary);
-  }
+    .text-primary {
+        color: var(--color-primary);
+    }
 
-  .text-tertiary {
-      color: var(--color-tertiary);
-  }
+    .text-secondary {
+        color: var(--color-secondary);
+    }
 
-  .text-quaternary {
-      color: var(--color-quaternary);
-  }
+    .text-tertiary {
+        color: var(--color-tertiary);
+    }
+
+    .text-quaternary {
+        color: var(--color-quaternary);
+    }
 }
