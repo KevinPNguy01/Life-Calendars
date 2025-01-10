@@ -13,7 +13,7 @@ import { theme } from './theme';
 function App() {
 	const temp = new Date();
 	const endDate = new Date(Date.UTC(temp.getFullYear(), temp.getMonth(), temp.getDate()+1));
-	const startDate = new Date(Date.UTC(endDate.getFullYear()-1, endDate.getMonth(), endDate.getDay()));
+	const startDate = new Date(Date.UTC(endDate.getFullYear()-1, endDate.getMonth(), endDate.getDate()+1));
 
 	const [timePeriod, setTimePeriod] = useState<[Date, Date]>([startDate, endDate]);
 	const [value, setValue] = useState(-1);
@@ -30,33 +30,36 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<div className="w-screen h-screen flex flex-col items-center justify-center gap-4">
-				<div>
-					<Select
-						className="!bg-tertiary rounded"
-						variant="standard"
-						disableUnderline
-						sx={{
-							'& .MuiSelect-select': {
-							   paddingX: 1.5,
-							   paddingY: 0.5
-							}
-						}}
-						labelId="time-period-label"
-						onChange={handleChange}
-						value={value}
-					>
-						<MenuItem value={-1}>Past Year</MenuItem>
-						{Array.from({ length: temp.getFullYear() - 2018}, (_, i) => temp.getFullYear() - i).map(
-							year => <MenuItem key={year} value={year}>{year}</MenuItem>
-						)}
-					</Select>
+				<div className="flex items-center gap-2">
+					<p className="text-dim-white text-lg pb-[3px]">Kevin's Life Stats in</p>
+					<div>
+						<Select
+							className="!bg-tertiary rounded"
+							variant="standard"
+							disableUnderline
+							sx={{
+								'& .MuiSelect-select': {
+								paddingX: 1,
+								paddingY: 0.5
+								}
+							}}
+							labelId="time-period-label"
+							onChange={handleChange}
+							value={value}
+						>
+							<MenuItem value={-1}>the past year</MenuItem>
+							{Array.from({ length: temp.getFullYear() - 2018}, (_, i) => temp.getFullYear() - i).map(
+								year => <MenuItem key={year} value={year}>{year}</MenuItem>
+							)}
+						</Select>
+					</div>
 				</div>
 				<div className="text-white grid grid-cols-[auto,1fr] place-items-center gap-x-8 gap-y-4">
-					<img className="h-8" src={StravaLogo}/>
+					<img className="w-32" src={StravaLogo}/>
 					<StravaStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
-					<img className="h-12" src={LeetCodeLogo}/>
+					<img className="w-32" src={LeetCodeLogo}/>
 					<LeetCodeStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
-					<img className="h-12" src={GitHubLogo}/>
+					<img className="w-32" src={GitHubLogo}/>
 					<GitHubStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
 				</div>
 			</div>

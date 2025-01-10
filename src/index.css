@@ -67,4 +67,8 @@ body {
     .text-quaternary {
         color: var(--color-quaternary);
     }
+
+    .text-dim-white {
+        color: var(--color-dim-white)
+    }
 }
