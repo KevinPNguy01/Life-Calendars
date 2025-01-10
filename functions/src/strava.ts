@@ -79,7 +79,7 @@ async function fetchActivities(accessToken: string) {
         const data = response.data;
         if (data.length === 0) break;                           // Break if no activities were retrieved.
         if (`${response.data[0].id}` in calendarData) break;    // Break if the most recent activity is already in the database.
-        activities.push(...response.data);
+        activities.push(...response.data.filter(activity => activity.type === "Run"));
         if (`${data[data.length-1].id}` in calendarData) break; // Break if the last activity is already in the database.
         page += 1;
     }
