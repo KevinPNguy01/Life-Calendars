@@ -18,7 +18,7 @@ export function LeetCodeStats({startDate, endDate}: {startDate: Date, endDate: D
             Object.assign(data, await fetchLeetcode(year));
         }
         setData(data);
-    })()}, []);
+    })()}, [startDate, endDate]);
 
     return (
         <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors} unit={"submissions"} showMonths={false}/>

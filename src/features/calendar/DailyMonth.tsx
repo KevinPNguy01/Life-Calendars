@@ -7,7 +7,7 @@ export function DailyMonth({start, data, offSet, numDays, numWeeks, colors, unit
 						{Array.from({ length: numWeeks }).map((_, colIndex) => {
 							const index = colIndex * 7 + rowIndex;
 							const time = Math.floor(start.getTime() / 1000) + (index - offSet) * 24 * 60 * 60;
-							const bg = index >= offSet && index - offSet < numDays ? time in data ? "group" : "!bg-tertiary group" : "!bg-secondary";
+							const bg = index >= offSet && index - offSet < numDays ? time in data ? "group cursor-pointer" : "!bg-tertiary group cursor-pointer" : "!bg-secondary";
 							const count = time in data ? Math.round(data[time] * 100) / 100 : 0;
 							const formattedDate = new Date(time * 1000).toLocaleString("UTC", { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 							let color = "";
@@ -18,7 +18,7 @@ export function DailyMonth({start, data, offSet, numDays, numWeeks, colors, unit
 							});
 							return (
 								<td
-									className={`p-1.5 rounded-sm ${bg} relative cursor-pointer`}
+									className={`p-1.5 rounded-sm ${bg} relative`}
 									key={colIndex}
 									style={{
 										backgroundColor: color

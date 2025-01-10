@@ -18,7 +18,7 @@ export function GitHubStats({startDate, endDate}: {startDate: Date, endDate: Dat
             Object.assign(data, parseGithub((await fetchGithub(year)).data.viewer, new Date(Date.UTC(year, 0))));
         }
         setData(data);
-    })()}, []);
+    })()}, [startDate, endDate]);
 
     return (
         <DailyCalendar startDate={startDate} endDate={endDate} data={data} colors={colors} unit={"commits"} showMonths={false}/>
