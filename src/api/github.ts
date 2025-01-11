@@ -5,7 +5,7 @@ const accessToken = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
 const graphqlUrl = "https://us-central1-kevins-life-stats.cloudfunctions.net/graphqlProxy";
 const endpoint = `https://api.github.com/graphql`;
 
-export const fetchGithub = async (year: number) => {
+export async function fetchGithub(year: number): Promise<User> {
 	const start = new Date(Date.UTC(year, 0, 1));
 	const end = new Date(Date.UTC(year + 1, 0, 0));
 	const query = `query {
@@ -33,7 +33,7 @@ export const fetchGithub = async (year: number) => {
 		}),
 	});
 	const json = await response.json();
-	return json;
+	return json.data.viewer;
 };
 
 export const parseGithub = (user: User, start: Date) => {

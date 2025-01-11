@@ -1,48 +1,28 @@
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { DailyMonth } from "./DailyMonth";
+import { TimeContext } from "../../App";
 
-function longestStreak(record: Record<string, number>): number {
-    // Get the sorted list of dates
-    const dates = Object.keys(record)
-      .map(date => new Date(parseInt(date) * 1000)) // Convert string to Date object
-      .sort((a, b) => a.getTime() - b.getTime()); // Sort dates in ascending order
+export function DailyCalendar({data, colors, unit}: {data: Record<string, number>, colors: [number, string][], unit: string}) {
+    const {timePeriod} = useContext(TimeContext);
+    const [startDate, endDate] = timePeriod;
 
-    if (!dates.length) return 0;
-  
-    let longest = 0;
-    let currentStreak = 1;
-  
-    // Iterate through the sorted dates and calculate streaks
-    for (let i = 1; i < dates.length; i++) {
-      const diffInMilliseconds = dates[i].getTime() - dates[i - 1].getTime(); // Difference in milliseconds
-      const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24); // Convert milliseconds to days
-  
-      if (diffInDays === 1) {
-        currentStreak++; // Consecutive day, increment streak
-      } else {
-        longest = Math.max(longest, currentStreak); // Update longest streak
-        currentStreak = 1; // Reset streak for new gap
-      }
-    }
-  
-    // Return the longest streak after the loop
-    return Math.max(longest, currentStreak);
-  }  
-
-export function DailyCalendar({startDate, endDate, data, colors, unit, showMonths}: {startDate: Date, endDate: Date, data: Record<string, number>, colors: [number, string][], unit: string, showMonths: boolean}) {
     const months: number[] = [];
     const startYear = startDate.getUTCFullYear();
-    for (let i = startDate.getUTCMonth(); Date.UTC(startYear, i) < endDate.getTime(); ++i) {
+    const startMonth = startDate.getUTCMonth();
+    for (let i = startMonth; Date.UTC(startYear, i) < endDate.getTime(); ++i) {
         months.push(i);
     }
     
-    const filteredData = Object.fromEntries(Object.entries(data)
-        .filter(([key]) => {
-            const keyDate = new Date(parseInt(key) * 1000);
-            return keyDate >= startDate && keyDate <= endDate;
-        }));
+    const filteredData = useMemo(() => Object.fromEntries(
+        Object.entries(data).filter(
+            ([key]) => {
+                const keyDate = new Date(parseInt(key) * 1000);
+                return keyDate >= startDate && keyDate <= endDate;
+            }
+        )
+    ), [startDate, endDate, data]);
 
-    const streak = useMemo(() => longestStreak(filteredData), [startDate, endDate, data]);
+    const streak = useMemo(() => longestStreak(filteredData), [startDate, endDate, filteredData]);
     
     return (
         <div className="bg-secondary p-4 rounded flex flex-col gap-2 max-w-full">
@@ -65,14 +45,11 @@ export function DailyCalendar({startDate, endDate, data, colors, unit, showMonth
             <div className="w-fit h-fit flex gap-2 max-w-full overflow-auto">
                 {months.map((index) => {
                     const start = new Date(Math.max(startDate.getTime(), Date.UTC(startYear, index)));
-                    const end = new Date(Math.min(endDate.getTime(), Date.UTC(startYear, index + 1)));                
-                    const offSet = start.getUTCDay();
-                    const numDays = Math.floor((+end - +start) / (1000 * 3600 * 24));
-                    const numWeeks = Math.ceil((numDays + offSet) / 7);
+                    const end = new Date(Math.min(endDate.getTime(), Date.UTC(startYear, index + 1)));
                     return (
                         <div key={index} className="flex flex-col items-center gap-1">
-                            <DailyMonth start={start} data={data} offSet={offSet} numDays={numDays} numWeeks={numWeeks} colors={colors} unit={unit}/>
-                            {showMonths && start.toLocaleString('default', { timeZone: 'UTC', month: 'short' })}
+                            <DailyMonth start={start} end={end} data={data} colors={colors} unit={unit}/>
+                            {start.toLocaleString('default', { timeZone: 'UTC', month: 'short' })}
                         </div>
                     );
                 })}
@@ -80,3 +57,27 @@ export function DailyCalendar({startDate, endDate, data, colors, unit, showMonth
         </div>
     );
 }
+
+function longestStreak(record: Record<string, number>) {
+    const dates = Object.keys(record)
+        .map(date => new Date(parseInt(date) * 1000))
+        .sort((a, b) => a.getTime() - b.getTime());
+    if (!dates.length) return 0;
+  
+    let longest = 0;
+    let currentStreak = 1;
+  
+    for (let i = 1; i < dates.length; i++) {
+        const diffInMilliseconds = dates[i].getTime() - dates[i - 1].getTime();
+        const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24);
+    
+        if (diffInDays === 1) {
+            ++currentStreak;
+        } else {
+            longest = Math.max(longest, currentStreak);
+            currentStreak = 1;
+        }
+    }
+  
+    return Math.max(longest, currentStreak);
+}  
