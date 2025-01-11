@@ -72,3 +72,18 @@ body {
         color: var(--color-dim-white)
     }
 }
+
+#root {
+    height: 100vh;
+    scrollbar-color: var(--color-secondary);
+
+}
+
+::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-tertiary);
+}

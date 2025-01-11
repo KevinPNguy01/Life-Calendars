@@ -45,24 +45,24 @@ export function DailyCalendar({startDate, endDate, data, colors, unit, showMonth
     const streak = useMemo(() => longestStreak(filteredData), [startDate, endDate, data]);
     
     return (
-        <div className="bg-secondary p-4 rounded flex flex-col gap-2">
-            <div className="flex justify-between items-end">
+        <div className="bg-secondary p-4 rounded flex flex-col gap-2 max-w-full">
+            <div className="flex justify-between items-start gap-8">
                 <p>
                     <span className="font-bold text-xl">{Math.round(Object.values(filteredData).reduce((sum, value) => sum + value, 0))}</span>
                     <span className="text-neutral-400">{` ${unit}`}</span>
                 </p>
-                <div className="flex gap-8">
+                <div className="flex gap-8 items-start">
                     <p>
-                        <span className="text-neutral-400 text-sm">Total Days Active: </span>
+                        <span className="text-center text-neutral-400 text-sm">Total Days Active: </span>
                         <span className="text-neutral-200 font-bold text-sm">{Object.keys(filteredData).length}</span>
                     </p>
                     <p>
-                        <span className="text-neutral-400 text-sm">Longest Streak: </span>
+                        <span className="text-center text-neutral-400 text-sm">Longest Streak: </span>
                         <span className="text-neutral-200 font-bold text-sm">{streak}</span>
                     </p>
                 </div>
             </div>
-            <div className="w-fit h-fit flex gap-2 justify-center items-center">
+            <div className="w-fit h-fit flex gap-2 max-w-full overflow-auto">
                 {months.map((index) => {
                     const start = new Date(Math.max(startDate.getTime(), Date.UTC(startYear, index)));
                     const end = new Date(Math.min(endDate.getTime(), Date.UTC(startYear, index + 1)));                

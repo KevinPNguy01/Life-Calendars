@@ -1,5 +1,46 @@
+import { useState } from "react";
+
+type Position = {
+    top: number;
+    left: number;
+};
+
 export function DailyMonth({start, data, offSet, numDays, numWeeks, colors, unit}: {start: Date, data: Record<string, number>, offSet: number, numDays: number, numWeeks: number, colors: [number, string][], unit: string}) {
+	const [position, setPosition] = useState<Position | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
+	const [hoverText, setHoverText] = useState("");
+
+    const handleMouseEnter  = (text: string) => (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+		setHoverText(text);
+        setPosition({
+            top: rect.top,
+            left: rect.left + rect.width,
+        });
+        setIsVisible(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsVisible(false);
+		setHoverText("");
+    };
+	
 	return (
+		<>
+		{isVisible && position && (
+			<span 
+				className="text-sm text-nowrap border border-quaternary bg-tertiary rounded py-0.5 px-2 z-10 -translate-x-1/2 -translate-y-full"
+				style={{
+					position: "fixed",
+					top: position.top,
+					left: position.left,
+					boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+					zIndex: 10,
+				}}
+			>
+				{hoverText}
+			</span>
+		)}
         <table className="border-separate border-spacing-[0.1875rem]">
 			<tbody>
 				{Array.from({ length: 7 }).map((_, rowIndex) => (
@@ -23,10 +64,9 @@ export function DailyMonth({start, data, offSet, numDays, numWeeks, colors, unit
 									style={{
 										backgroundColor: color
 									}}
+									onMouseEnter={handleMouseEnter(`${count} ${unit} on ${formattedDate}`)}
+									onMouseLeave={handleMouseLeave}
 								>
-									<span className="text-sm text-nowrap border border-quaternary bg-tertiary rounded left-1/2 -translate-x-1/2 -translate-y-1/4 bottom-full py-0.5 px-2 z-10 absolute hidden group-hover:block">
-										{`${count} ${unit} on ${formattedDate}`}
-									</span>
 								</td>
 							);
 						})}
@@ -34,5 +74,6 @@ export function DailyMonth({start, data, offSet, numDays, numWeeks, colors, unit
 				))}
 			</tbody>
         </table>
+		</>
     );
 }

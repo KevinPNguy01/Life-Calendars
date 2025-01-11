@@ -29,7 +29,7 @@ function App() {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<div className="w-screen h-screen flex flex-col items-center justify-center gap-4">
+			<div className="w-full h-fit flex flex-col items-center justify-center gap-4 p-4">
 				<div className="flex items-center gap-2">
 					<p className="text-dim-white text-lg pb-[3px]">Kevin's Life Stats in</p>
 					<div>
@@ -54,12 +54,12 @@ function App() {
 						</Select>
 					</div>
 				</div>
-				<div className="text-white grid grid-cols-[auto,1fr] place-items-center gap-x-8 gap-y-4">
-					<img className="w-32" src={StravaLogo}/>
+				<div className="max-w-full h-fit text-white flex flex-col 2xl:grid 2xl:pr-20 grid-cols-[auto,1fr] place-items-center items-center gap-x-8 gap-y-4">
+					<img className="pt-4 2xl:pt-0 w-32" src={StravaLogo}/>
 					<StravaStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
-					<img className="w-32" src={LeetCodeLogo}/>
+					<img className="pt-4 2xl:pt-0 w-32" src={LeetCodeLogo}/>
 					<LeetCodeStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
-					<img className="w-32" src={GitHubLogo}/>
+					<img className="pt-4 2xl:pt-0 w-32" src={GitHubLogo}/>
 					<GitHubStats startDate={timePeriod[0]} endDate={timePeriod[1]}/>
 				</div>
 			</div>
