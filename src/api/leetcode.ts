@@ -1,12 +1,15 @@
+const username = import.meta.env.VITE_LEETCODE_USERNAME;
 const graphqlUrl = "https://us-central1-kevins-life-stats.cloudfunctions.net/graphqlProxy";
 const endpoint = `https://leetcode.com/graphql`;
-const query = `query userProfileCalendar($username: String!, $year: Int) {
-  matchedUser(username: $username) {
-    userCalendar(year: $year) {
-      submissionCalendar
-    }
-  }
-}`;
+const query = `
+	query userProfileCalendar($username: String!, $year: Int) {
+		matchedUser(username: $username) {
+			userCalendar(year: $year) {
+				submissionCalendar
+			}
+		}
+	}
+`;
 
 export const fetchLeetcode = async (year: number) => {
     const response = await fetch(graphqlUrl, {
@@ -16,7 +19,7 @@ export const fetchLeetcode = async (year: number) => {
             endpoint,
             query,
             variables: {
-              "username": "nguyk1", 
+              "username": username, 
               "year": year
             }
         }),
