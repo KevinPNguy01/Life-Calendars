@@ -75,6 +75,8 @@ body {
 
 #root {
     height: 100vh;
+    display: flex;
+    flex-direction: column;
     scrollbar-color: var(--color-secondary);
 
 }

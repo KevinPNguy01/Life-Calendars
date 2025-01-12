@@ -1,4 +1,3 @@
-const username = import.meta.env.VITE_LEETCODE_USERNAME;
 const graphqlUrl = "https://us-central1-kevins-life-stats.cloudfunctions.net/graphqlProxy";
 const endpoint = `https://leetcode.com/graphql`;
 const query = `
@@ -11,7 +10,7 @@ const query = `
 	}
 `;
 
-export const fetchLeetcode = async (year: number) => {
+export const fetchLeetcode = async (username: string, year: number) => {
     const response = await fetch(graphqlUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

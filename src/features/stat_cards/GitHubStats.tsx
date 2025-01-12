@@ -1,7 +1,8 @@
-import { useState, useEffect, useContext } from "react";
-import { DailyCalendar } from "../calendar/DailyCalendar";
+import { useContext, useEffect, useState } from "react";
 import { fetchGithub, parseGithub } from "../../api/github";
-import { TimeContext } from "../../App";
+import { TimeContext } from "../../contexts/TimeContext";
+import { UserContext } from "../../contexts/UserContext";
+import { DailyCalendar } from "../calendar/DailyCalendar";
 
 const colors: [number, string][] = [
     [1, "#0F55BD"],
@@ -11,21 +12,23 @@ const colors: [number, string][] = [
 ];
 
 export function GitHubStats() {
+    const {githubUsername} = useContext(UserContext)
     const {timePeriod} = useContext(TimeContext);
     const [data, setData] = useState<Record<string, number>>({});
     
     useEffect(() => {(async () => {
+        setData({});
         const data = {};
         const startYear = timePeriod[0].getUTCFullYear();
         const endYear = timePeriod[1].getUTCFullYear();
         for (let year = startYear; year <= endYear; ++year) {
-            const userData = await fetchGithub(year);
+            const userData = await fetchGithub(githubUsername, year);
             const yearStart = new Date(Date.UTC(year));
             const parsedData = parseGithub(userData, yearStart);
             Object.assign(data, parsedData);
         }
         setData(data);
-    })()}, [timePeriod]);
+    })()}, [githubUsername, timePeriod]);
 
     return (
         <DailyCalendar data={data} colors={colors} unit="commits"/>

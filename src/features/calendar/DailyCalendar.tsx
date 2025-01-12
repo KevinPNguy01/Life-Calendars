@@ -1,6 +1,6 @@
 import { useContext, useMemo } from "react";
+import { TimeContext } from "../../contexts/TimeContext";
 import { DailyMonth } from "./DailyMonth";
-import { TimeContext } from "../../App";
 
 export function DailyCalendar({data, colors, unit}: {data: Record<string, number>, colors: [number, string][], unit: string}) {
     const {timePeriod} = useContext(TimeContext);
@@ -22,7 +22,7 @@ export function DailyCalendar({data, colors, unit}: {data: Record<string, number
         )
     ), [startDate, endDate, data]);
 
-    const streak = useMemo(() => longestStreak(filteredData), [startDate, endDate, filteredData]);
+    const streak = useMemo(() => longestStreak(filteredData), [filteredData]);
     
     return (
         <div className="bg-secondary p-4 rounded flex flex-col gap-2 max-w-full">

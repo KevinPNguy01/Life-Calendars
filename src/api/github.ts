@@ -1,11 +1,10 @@
 import { User } from "./types/github_types";
 
-const username = import.meta.env.VITE_GITHUB_USERNAME;
 const accessToken = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
 const graphqlUrl = "https://us-central1-kevins-life-stats.cloudfunctions.net/graphqlProxy";
 const endpoint = `https://api.github.com/graphql`;
 
-export async function fetchGithub(year: number): Promise<User> {
+export async function fetchGithub(username: string, year: number): Promise<User> {
 	const start = new Date(Date.UTC(year, 0, 1));
 	const end = new Date(Date.UTC(year + 1, 0, 0));
 	const query = `query {

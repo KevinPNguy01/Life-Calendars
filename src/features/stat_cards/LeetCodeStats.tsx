@@ -1,7 +1,8 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchLeetcode } from "../../api/leetcode";
+import { TimeContext } from "../../contexts/TimeContext";
+import { UserContext } from "../../contexts/UserContext";
 import { DailyCalendar } from "../calendar/DailyCalendar";
-import { TimeContext } from "../../App";
 
 const colors: [number, string][] = [
     [1, "#006620"],
@@ -11,19 +12,21 @@ const colors: [number, string][] = [
 ];
 
 export function LeetCodeStats() {
+    const {leetcodeUsername} = useContext(UserContext);
     const {timePeriod} = useContext(TimeContext);
     const [data, setData] = useState<Record<string, number>>({});
     
     useEffect(() => {(async () => {
+        setData({});
         const data = {};
         const startYear = timePeriod[0].getUTCFullYear();
         const endYear = timePeriod[1].getUTCFullYear();
         for (let year = startYear; year <= endYear; ++year) {
-            const newData = await fetchLeetcode(year);
+            const newData = await fetchLeetcode(leetcodeUsername, year);
             Object.assign(data, newData);
         }
         setData(data);
-    })()}, [timePeriod]);
+    })()}, [leetcodeUsername, timePeriod]);
 
     return (
         <DailyCalendar data={data} colors={colors} unit="submissions"/>

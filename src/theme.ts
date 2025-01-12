@@ -4,7 +4,10 @@ export const theme = createTheme({
     palette: {
 		mode: 'dark',
 		primary: {
-			main: '#555',
+			main: 'rgb(10, 132, 255)',
+		},
+		secondary: {
+			main: '#555'
 		},
 		text: {
 			primary: 'rgba(255,255,255,0.87)',
@@ -14,4 +17,9 @@ export const theme = createTheme({
 			default: '#333',
 		},
     },
+	typography: {
+		button: {
+		  	textTransform: "none"
+		}
+	}
 });
