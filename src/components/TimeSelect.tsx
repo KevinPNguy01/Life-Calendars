@@ -1,9 +1,9 @@
 import MenuItem from "@mui/material/MenuItem/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select/Select";
 import { useContext, useState } from "react";
+import { pastYearEnd, pastYearStart } from "../constants/time";
 import { TimeContext } from "../contexts/TimeContext";
 import { UserContext } from "../contexts/UserContext";
-import { pastYearEnd, pastYearStart } from "../utils/time";
 
 const currentYear = new Date().getFullYear();
 const yearItems = Array.from({ length: currentYear - 2018}, (_, i) => currentYear - i);
@@ -21,7 +21,7 @@ export function TimeSelect() {
     
     return (
         <div className="flex items-center gap-2">
-            <span className="text-dim-white text-lg pb-[3px]">{username}'s Life Stats in</span>
+            <span className="text-dim-white text-lg pb-[3px]">{username}'s Life Calendars in</span>
             <Select
                 onChange={(e) => {handleChange(e); setValue(e.target.value as number)}}
                 className="!bg-tertiary rounded"

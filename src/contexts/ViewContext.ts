@@ -6,7 +6,7 @@ export type ViewContextType = {
         leetcode: boolean;
         github: boolean;
     };
-    setView: (view: keyof ViewContextType["views"], value: boolean) => void;
+    setView: (view: keyof ViewContextType["views"] | "all", value: boolean) => void;
 };
 
 export const ViewContext = createContext<ViewContextType>({
