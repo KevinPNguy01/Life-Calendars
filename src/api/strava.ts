@@ -1,7 +1,22 @@
-const apiUrl = "https://getstravaactivities-zxhhhobsqq-uc.a.run.app";
+const activitiesUrl = "https://getstravaactivities-zxhhhobsqq-uc.a.run.app";
+const accessTokenUrl = "https://getstravaaccesstoken-zxhhhobsqq-uc.a.run.app";
 
-export const fetchStrava = async () => {
-    const response = await fetch(apiUrl, { method: "GET"});
+export const getNewAccessToken = async (code: string) => {
+    const response = await fetch(accessTokenUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({code}),
+    });
+    const data = await response.json();
+    return data;
+}
+
+export const fetchStrava = async (athlete_id: string) => {
+    const response = await fetch(activitiesUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({athlete_id}),
+    });
     const data = await response.json() as Record<string, number>;
     return data;
 }

@@ -1,36 +1,90 @@
-import { onRequest } from "firebase-functions/https";
-import { db } from "./firebase";
-import { getDoc, doc, setDoc, updateDoc, Timestamp} from "firebase/firestore";
 import axios from "axios";
-import { StravaActivity } from "./types/strava_types";
+import { onRequest } from "firebase-functions/https";
 import { error } from "firebase-functions/logger";
+import { doc, getDoc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { db } from "./firebase";
+import { AuthResponse, StravaActivity } from "./types/strava_types";
 
-const clientId = process.env.STRAVA_CLIENT_ID;
-const clientSecret = process.env.STRAVA_CLIENT_SECRET;
-const athleteId = "56713265";
+const clientId = process.env.VITE_STRAVA_CLIENT_ID;
+const clientSecret = process.env.VITE_STRAVA_CLIENT_SECRET;
 
 export const getStravaActivities = onRequest(async (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
     if (req.method === "OPTIONS") {
-        res.set("Access-Control-Allow-Methods", "GET");
+        res.set("Access-Control-Allow-Methods", "POST");
         res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
         res.set("Access-Control-Max-Age", "3600");
         res.status(204).send("");
         return;
     }
 
-    if (req.method !== "GET") {
+    if (req.method !== "POST") {
         res.status(405).send({ error: "Method Not Allowed" });
         return;
     }
 
-    const accessToken = await getAccessToken();
-    await cacheActivities(await fetchActivities(accessToken));
-    const data = await getStravaCalendar();
+    const {athlete_id} = req.body;
+    if (!athlete_id) {
+        res.status(400).send({message: "Missing 'athlete_id' parameter."});
+        return;
+    }
+
+    const accessToken = await getAccessToken(athlete_id);
+    await cacheActivities(athlete_id, await fetchActivities(athlete_id, accessToken));
+    const data = await getStravaCalendar(athlete_id, );
     res.status(200).send(data);
 });
 
-async function getAccessToken() {
+export const getStravaAccessToken = onRequest(async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+    if (req.method === "OPTIONS") {
+        res.set("Access-Control-Allow-Methods", "POST");
+        res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        res.set("Access-Control-Max-Age", "3600");
+        res.status(204).send("");
+        return;
+    }
+
+    if (req.method !== "POST") {
+        res.status(405).send({ error: "Method Not Allowed" });
+        return;
+    }
+
+    const {code} = req.body;
+    if (!code) {
+        res.status(400).send({message: "Missing 'code' parameter."});
+        return;
+    }
+
+    const response = await fetch('https://www.strava.com/oauth/token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            client_id: clientId,
+            client_secret: clientSecret,
+            code: code,
+            grant_type: 'authorization_code',
+        }),
+    });
+
+    if (response.ok) {
+        const data = await response.json() as AuthResponse;
+        const userDocRef = doc(db, "stravaUsers", `${data.athlete.id}`);
+        await setDoc(userDocRef, {
+            accessToken: data.access_token,
+            expiresAt: data.expires_at,
+            refreshToken: data.refresh_token
+        }, {merge: true});
+
+        res.status(200).send({athlete_id: data.athlete.id});
+    } else {
+        res.status(500).send({message: 'Failed to exchange code for token', clientId: clientId});
+    }
+});
+
+async function getAccessToken(athleteId: string) {
     const userDocRef = doc(db, "stravaUsers", athleteId);
     const userDoc = await getDoc(userDocRef);
     if (!userDoc.exists()) {
@@ -61,7 +115,7 @@ async function getAccessToken() {
  * @param accessToken The token uses to authenticate to Strava.
  * @returns A list Strava activities.
  */
-async function fetchActivities(accessToken: string) {
+async function fetchActivities(athleteId: string, accessToken: string) {
     const activities: StravaActivity[] = [];
     let page = 1;
     const perPage = 100; // Max allowed by Strava API
@@ -87,7 +141,7 @@ async function fetchActivities(accessToken: string) {
     return activities;
 }
 
-async function cacheActivities(activities: StravaActivity[]) {
+async function cacheActivities(athleteId: string, activities: StravaActivity[]) {
     const docRef = doc(db, "stravaUsers", athleteId);
     const userDoc = await getDoc(docRef);
     const calendarData = (userDoc.data()?.calendar || {}) as Record<string, {start_date: Date, distance: number}>;
@@ -102,7 +156,7 @@ async function cacheActivities(activities: StravaActivity[]) {
     updateDoc(docRef, {calendar: calendarData});
 }
 
-async function getStravaCalendar() {
+async function getStravaCalendar(athleteId: string) {
     const stravaCalendar: Record<string, number> = {};
     const docRef = doc(db, "stravaUsers", athleteId);
     const userDoc = await getDoc(docRef);

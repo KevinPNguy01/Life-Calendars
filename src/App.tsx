@@ -18,10 +18,11 @@ function App() {
 	const [username, setUsername] = useState("Kevin");
 	const [leetcodeUsername, setLeetcodeUsername] = useState("nguyk1");
 	const [githubUsername, setGithubUsername] = useState("KevinPNguy01");
+	const [stravaId, setStravaId] = useState("56713265");
 
 	return (
 		<ThemeProvider theme={theme}>
-			<UserContext.Provider value={{username, setUsername, leetcodeUsername, setLeetcodeUsername, githubUsername, setGithubUsername}}>
+			<UserContext.Provider value={{username, setUsername, leetcodeUsername, setLeetcodeUsername, githubUsername, setGithubUsername, stravaId, setStravaId}}>
 			<TimeContext.Provider value={{timePeriod, setTimePeriod}}>
 				<nav className="w-full p-4 flex justify-end">
 					<ConnectButton/>

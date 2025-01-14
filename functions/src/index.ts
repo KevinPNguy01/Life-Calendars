@@ -8,7 +8,7 @@
  */
 
 import { onRequest } from "firebase-functions/v2/https";
-import { getStravaActivities } from "./strava";
+import { getStravaAccessToken, getStravaActivities } from "./strava";
 
 const graphqlProxy = onRequest(async (req, res) => {
     res.set("Access-Control-Allow-Origin", "*");
@@ -60,4 +60,4 @@ const graphqlProxy = onRequest(async (req, res) => {
     }
 });
 
-export {graphqlProxy, getStravaActivities};
+export { getStravaAccessToken, getStravaActivities, graphqlProxy };
