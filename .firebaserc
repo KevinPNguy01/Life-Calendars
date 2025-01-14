@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "kevins-life-stats"
-  }
+    "default": "my-life-calendars"
+  },
+  "targets": {},
+  "etags": {}
 }

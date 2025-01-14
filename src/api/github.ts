@@ -1,7 +1,7 @@
 import { User } from "./types/github_types";
 
 const accessToken = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
-const graphqlUrl = "https://us-central1-kevins-life-stats.cloudfunctions.net/graphqlProxy";
+const graphqlUrl = "https://us-central1-my-life-calendars.cloudfunctions.net/graphqlProxy";
 const endpoint = `https://api.github.com/graphql`;
 
 export async function fetchGithub(username: string, year: number): Promise<User> {

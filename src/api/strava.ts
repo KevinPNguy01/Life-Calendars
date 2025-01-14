@@ -1,5 +1,5 @@
-const activitiesUrl = "https://getstravaactivities-zxhhhobsqq-uc.a.run.app";
-const accessTokenUrl = "https://getstravaaccesstoken-zxhhhobsqq-uc.a.run.app";
+const activitiesUrl = "https://us-central1-my-life-calendars.cloudfunctions.net/getStravaActivities";
+const accessTokenUrl = "https://us-central1-my-life-calendars.cloudfunctions.net/getStravaAccessToken";
 
 export const getNewAccessToken = async (code: string) => {
     const response = await fetch(accessTokenUrl, {

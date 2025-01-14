@@ -1,4 +1,4 @@
-const graphqlUrl = "https://us-central1-kevins-life-stats.cloudfunctions.net/graphqlProxy";
+const graphqlUrl = "https://us-central1-my-life-calendars.cloudfunctions.net/graphqlProxy";
 const endpoint = `https://leetcode.com/graphql`;
 const query = `
 	query userProfileCalendar($username: String!, $year: Int) {

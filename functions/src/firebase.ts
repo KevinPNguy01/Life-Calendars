@@ -3,13 +3,13 @@ import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.API_KEY,
-    authDomain: "kevins-life-stats.firebaseapp.com",
-    projectId: "kevins-life-stats",
-    storageBucket: "kevins-life-stats.firebasestorage.app",
-    messagingSenderId: "393482042831",
-    appId: "1:393482042831:web:538c293a0fcd9d74bfa6ba",
-    measurementId: "G-ZDZNVB0FVS"
-};
+    authDomain: "my-life-calendars.firebaseapp.com",
+    projectId: "my-life-calendars",
+    storageBucket: "my-life-calendars.firebasestorage.app",
+    messagingSenderId: "699790810573",
+    appId: "1:699790810573:web:50b463e2032fcd4821f884",
+    measurementId: "G-R3TMYNB8XT"
+  };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
