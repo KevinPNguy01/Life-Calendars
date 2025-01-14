@@ -20,6 +20,8 @@ https://www.strava.com/oauth/authorize
     &scope=read,activity:read_all
 `.replace(/\s/g, "");
 
+const enableStrava = false;
+
 export function ConnectButton() {
     const {username, setUsername, leetcodeUsername, setLeetcodeUsername, githubUsername, setGithubUsername, setStravaId} = useContext(UserContext);
     const [open, setOpen] = useState(false);
@@ -63,9 +65,13 @@ export function ConnectButton() {
                         <img className="w-8" src={GitHubLogo}/>
                         <TextField value={formData.githubUsername} label="GitHub Username" onChange={(e) => setFormData({...formData, githubUsername: e.currentTarget.value})}/>
                         <img className="w-8" src={StravaLogo}/>
-                        <a onClick={() => {setStravaId(""); localStorage.setItem("connectWithStrava", "true")}} href={stravaLink}>
-                            <img className="h-14" src={ConnectWithStravaLogo}/>
-                        </a>
+                        {enableStrava ? (
+                            <a onClick={() => {setStravaId(""); localStorage.setItem("connectWithStrava", "true")}} href={stravaLink}>
+                                <img className="h-14" src={ConnectWithStravaLogo}/>
+                            </a>
+                        ) : (
+                            <TextField value="Coming soon..." label="Connect with Strava" disabled/>
+                        )}
                     </form>
                     <div className="w-full justify-end flex gap-4">
                         <Button 
