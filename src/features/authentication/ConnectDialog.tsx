@@ -46,18 +46,19 @@ export function ConnectButton() {
     return (
         <>
             <Button
+                className="!rounded-full"
                 color="primary"
                 variant="contained"
                 onClick={handleOpen}
             >
                 Connect
             </Button>
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose} className=''>
                 <DialogTitle>
                     Connect Accounts
                 </DialogTitle>
                 <DialogContent className="flex flex-col gap-8">
-                    <form className="grid grid-cols-[auto,1fr] gap-4 place-items-center !py-4">
+                    <form className="grid grid-cols-[auto,1fr] gap-4 place-items-center !py-4 2xl:!px-8">
                         <PersonIcon/>
                         <TextField value={formData.username} label="Name" onChange={(e) => setFormData({...formData, username: e.currentTarget.value})}/>
                         <img className="w-8" src={LeetCodeLogo}/>
