@@ -30,6 +30,6 @@ export function GitHubStats() {
     })()}, [githubUsername, timePeriod]);
 
     return (
-        <DailyCalendar data={data} colors={colors} unit="commits"/>
+        <DailyCalendar data={data} colors={colors} unit="contributions"/>
     );
 }
