@@ -16,6 +16,7 @@ export function GitHubStats() {
     const {timePeriod} = useContext(TimeContext);
     const [data, setData] = useState<Record<string, number>>({});
     useEffect(() => {(async () => {
+        setData({});
         const data = {};
         const startYear = timePeriod[0].getUTCFullYear();
         const endYear = timePeriod[1].getUTCFullYear();

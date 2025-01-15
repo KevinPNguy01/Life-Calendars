@@ -28,13 +28,12 @@ export function StravaStats() {
         })();
     }, [setStravaId]);
 
-    useEffect(() => {
-        (async () => {
-            const newData = await fetchStrava(stravaId);
-            const parsedData = parseStrava(newData);
-            setData(parsedData);
-        })();
-    }, [stravaId]);
+    useEffect(() => {(async () => {
+        setData({});
+        const newData = await fetchStrava(stravaId);
+        const parsedData = parseStrava(newData);
+        setData(parsedData);
+    })();}, [stravaId]);
 
     return (
         <DailyCalendar data={data} colors={colors} unit="miles run"/>

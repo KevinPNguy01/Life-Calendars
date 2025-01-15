@@ -40,13 +40,13 @@ function App() {
 				</nav>
 				<div className="w-full flex-grow flex flex-col items-center justify-center gap-3 pb-20">
 					<TimeSelect/>
-					<div className="max-w-full h-fit text-white flex flex-col 2xl:grid 2xl:pr-20 grid-cols-[auto,1fr] place-items-center items-center gap-x-8 gap-y-4">
-						<img className={`pt-4 2xl:pt-0 w-32 ${!views.strava ? "hidden" : ""}`} src={StravaLogo}/>
-						<div className={views.strava ? "visible" : "hidden"}><StravaStats/></div>
+					<div className="p-4 max-w-full h-fit text-white flex flex-col 2xl:grid 2xl:pr-20 grid-cols-[auto,1fr] place-items-center items-center gap-x-8 gap-y-4">
+						<img className={`w-32 ${!views.strava ? "hidden" : ""}`} src={StravaLogo}/>
+						<div className={views.strava ? "max-w-full visible" : "hidden"}><StravaStats/></div>
 						<img className={`pt-4 2xl:pt-0 w-32 ${!views.leetcode ? "hidden" : ""}`} src={LeetCodeLogo}/>
-						<div className={views.leetcode ? "visible" : "hidden"}><LeetCodeStats/></div>
+						<div className={views.leetcode ? "max-w-full visible" : "hidden"}><LeetCodeStats/></div>
 						<img className={`pt-4 2xl:pt-0 w-32 ${!views.github ? "hidden" : ""}`} src={GitHubLogo}/>
-						<div className={views.github ? "visible" : "hidden"}><GitHubStats/></div>
+						<div className={views.github ? "max-w-full visible" : "hidden"}><GitHubStats/></div>
 					</div>
 				</div>
 			</ViewContext.Provider>

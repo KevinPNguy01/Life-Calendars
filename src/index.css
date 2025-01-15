@@ -78,7 +78,6 @@ body {
     display: flex;
     flex-direction: column;
     scrollbar-color: var(--color-secondary);
-
 }
 
 ::-webkit-scrollbar {

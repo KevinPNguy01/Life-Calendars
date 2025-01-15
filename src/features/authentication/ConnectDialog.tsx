@@ -64,6 +64,31 @@ export function ConnectButton() {
         handleClose();
     }
 
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+
+            const currentElement = document.activeElement as HTMLElement;
+            const form = currentElement.closest("form");
+            if (form) {
+                const focusableElements = Array.from(
+                    form.querySelectorAll<HTMLElement>(
+                        "input, select, textarea, button, [tabindex]:not([tabindex='-1'])"
+                    )
+                ).filter((el) => !el.hasAttribute("disabled"));
+
+                const currentIndex = focusableElements.indexOf(currentElement);
+                if (currentIndex >= 0 && currentIndex < focusableElements.length - 1) {
+                    focusableElements[currentIndex + 1].focus();
+                }
+            }
+        }
+    };
+
+    const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+        event.target.select();
+    };
+
     return (
         <>
             <Button
@@ -82,11 +107,11 @@ export function ConnectButton() {
                     <Box component="form" className="flex flex-col gap-4" onSubmit={(e) => {e.preventDefault(); handleSubmit()}}>
                         <div className="grid grid-cols-[auto,1fr] gap-4 place-items-center !py-4 2xl:!px-8">
                             <PersonIcon/>
-                            <TextField value={formData.username} label="Name" onChange={(e) => setFormData({...formData, username: e.currentTarget.value})}/>
+                            <TextField onKeyDown={handleKeyDown} onFocus={handleFocus} value={formData.username} label="Name" onChange={(e) => setFormData({...formData, username: e.currentTarget.value})}/>
                             <img className="w-8" src={LeetCodeLogo}/>
-                            <TextField value={formData.leetcodeUsername} label="LeetCode Username" onChange={(e) => setFormData({...formData, leetcodeUsername: e.currentTarget.value})}/>
+                            <TextField onKeyDown={handleKeyDown} onFocus={handleFocus} value={formData.leetcodeUsername} label="LeetCode Username" onChange={(e) => setFormData({...formData, leetcodeUsername: e.currentTarget.value})}/>
                             <img className="w-8" src={GitHubLogo}/>
-                            <TextField value={formData.githubUsername} label="GitHub Username" onChange={(e) => setFormData({...formData, githubUsername: e.currentTarget.value})}/>
+                            <TextField onFocus={handleFocus} value={formData.githubUsername} label="GitHub Username" onChange={(e) => setFormData({...formData, githubUsername: e.currentTarget.value})}/>
                             <img className="w-8" src={StravaLogo}/>
                             {enableStrava ? (
                                 <a onClick={() => {setStravaId(""); localStorage.setItem("connectWithStrava", "true")}} href={stravaLink}>
