@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import GitHubLogo from './assets/github_logo.png';
 import LeetCodeLogo from './assets/leetcode_logo.png';
 import StravaLogo from './assets/strava_logo.png';
@@ -30,29 +31,36 @@ function App() {
     };
 
 	return (
-		<ThemeProvider theme={theme}>
-			<UserContext.Provider value={{username, setUsername, leetcodeUsername, setLeetcodeUsername, githubUsername, setGithubUsername, stravaId, setStravaId}}>
-			<TimeContext.Provider value={{timePeriod, setTimePeriod}}>
-			<ViewContext.Provider value={{views, setView}}>
-				<nav className="w-full p-4 flex justify-end gap-4 items-center">
-					<SettingsButton/>
-					<ConnectButton/>
-				</nav>
-				<div className="w-full flex-grow flex flex-col items-center justify-center gap-3 pb-20">
-					<TimeSelect/>
-					<div className="p-4 max-w-full h-fit text-white flex flex-col 2xl:grid 2xl:pr-20 grid-cols-[auto,1fr] place-items-center items-center gap-x-8 gap-y-4">
-						<img className={`w-32 ${!views.strava ? "hidden" : ""}`} src={StravaLogo}/>
-						<div className={views.strava ? "max-w-full visible" : "hidden"}><StravaStats/></div>
-						<img className={`pt-4 2xl:pt-0 w-32 ${!views.leetcode ? "hidden" : ""}`} src={LeetCodeLogo}/>
-						<div className={views.leetcode ? "max-w-full visible" : "hidden"}><LeetCodeStats/></div>
-						<img className={`pt-4 2xl:pt-0 w-32 ${!views.github ? "hidden" : ""}`} src={GitHubLogo}/>
-						<div className={views.github ? "max-w-full visible" : "hidden"}><GitHubStats/></div>
-					</div>
-				</div>
-			</ViewContext.Provider>
-			</TimeContext.Provider>
-			</UserContext.Provider>
-		</ThemeProvider>
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={
+					<ThemeProvider theme={theme}>
+						<UserContext.Provider value={{username, setUsername, leetcodeUsername, setLeetcodeUsername, githubUsername, setGithubUsername, stravaId, setStravaId}}>
+						<TimeContext.Provider value={{timePeriod, setTimePeriod}}>
+						<ViewContext.Provider value={{views, setView}}>
+							<nav className="w-full p-4 flex justify-end gap-4 items-center">
+								<SettingsButton/>
+								<ConnectButton/>
+							</nav>
+							<div className="w-full flex-grow flex flex-col items-center justify-center gap-3 pb-20">
+								<TimeSelect/>
+								<div className="p-4 max-w-full h-fit text-white flex flex-col 2xl:grid 2xl:pr-20 grid-cols-[auto,1fr] place-items-center items-center gap-x-8 gap-y-4">
+									<img className={`w-32 ${!views.strava ? "hidden" : ""}`} src={StravaLogo}/>
+									<div className={views.strava ? "max-w-full visible" : "hidden"}><StravaStats/></div>
+									<img className={`pt-4 2xl:pt-0 w-32 ${!views.leetcode ? "hidden" : ""}`} src={LeetCodeLogo}/>
+									<div className={views.leetcode ? "max-w-full visible" : "hidden"}><LeetCodeStats/></div>
+									<img className={`pt-4 2xl:pt-0 w-32 ${!views.github ? "hidden" : ""}`} src={GitHubLogo}/>
+									<div className={views.github ? "max-w-full visible" : "hidden"}><GitHubStats/></div>
+								</div>
+							</div>
+						</ViewContext.Provider>
+						</TimeContext.Provider>
+						</UserContext.Provider>
+					</ThemeProvider>
+				}/>
+			</Routes>
+		</BrowserRouter>
+
 	);
 }
 

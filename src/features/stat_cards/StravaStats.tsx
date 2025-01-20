@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { fetchStrava, getNewAccessToken, parseStrava } from "../../api/strava";
 import { UserContext } from "../../contexts/UserContext";
 import { DailyCalendar } from "../calendar/DailyCalendar";
@@ -13,12 +14,18 @@ const colors: [number, string][] = [
 export function StravaStats() {
     const {stravaId, setStravaId} = useContext(UserContext);
     const [data, setData] = useState<Record<string, number>>({});
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
     
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
+        const code = searchParams.get('code');
         (async () => {
             if (code) {
+                setSearchParams({}, { replace: true });
+                navigate(window.location.pathname, { replace: true });
+                
+                setStravaId("");
                 const response = await getNewAccessToken(code);
                 const athlete_id: number = response.athlete_id;
                 if (athlete_id) {
@@ -26,7 +33,7 @@ export function StravaStats() {
                 }
             }
         })();
-    }, [setStravaId]);
+    }, [navigate, searchParams, setSearchParams, setStravaId]);
 
     useEffect(() => {(async () => {
         setData({});

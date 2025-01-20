@@ -1,10 +1,11 @@
 import PersonIcon from '@mui/icons-material/Person';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box/Box';
 import Button from "@mui/material/Button/Button";
 import Dialog from "@mui/material/Dialog/Dialog";
 import DialogContent from "@mui/material/DialogContent/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle/DialogTitle";
 import TextField from "@mui/material/TextField/TextField";
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useContext, useState } from "react";
 import ConnectWithStravaLogo from "../../assets/connect_with_strava.png";
 import GitHubLogo from "../../assets/github_logo_small.webp";
@@ -13,6 +14,7 @@ import StravaLogo from "../../assets/strava_logo_small.webp";
 import { defaultUser } from '../../constants/defaultUser';
 import { UserContext } from '../../contexts/UserContext';
 import { ViewContext } from '../../contexts/ViewContext';
+import { theme } from '../../theme';
 
 const stravaLink = `
 https://www.strava.com/oauth/authorize
@@ -23,7 +25,7 @@ https://www.strava.com/oauth/authorize
     &scope=read,activity:read_all
 `.replace(/\s/g, "");
 
-const enableStrava = false;
+const enableStrava = true;
 
 const {defaultUsername, defaultStravaId, defaultLeetCodeUsername, defaultGitHubUsername} = defaultUser;
 
@@ -89,6 +91,8 @@ export function ConnectButton() {
         event.target.select();
     };
 
+    const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+
     return (
         <>
             <Button
@@ -115,14 +119,15 @@ export function ConnectButton() {
                             <img className="w-8" src={StravaLogo}/>
                             {enableStrava ? (
                                 <a onClick={() => {setStravaId(""); localStorage.setItem("connectWithStrava", "true")}} href={stravaLink}>
-                                    <img className="h-14" src={ConnectWithStravaLogo}/>
+                                    <img className="max-h-14" src={ConnectWithStravaLogo}/>
                                 </a>
                             ) : (
                                 <TextField value="Coming soon..." label="Connect with Strava" disabled/>
                             )}
                         </div>
-                        <div className="w-full justify-end flex gap-4">
+                        <div className="w-full justify-end flex flex-wrap gap-4">
                             <Button 
+                                size={isXs ? "small" : "medium"}
                                 onClick={handleReset}
                                 variant="outlined" 
                                 color="error"
@@ -130,6 +135,7 @@ export function ConnectButton() {
                                 Reset
                             </Button>
                             <Button 
+                                size={isXs ? "small" : "medium"}
                                 onClick={handleClose}
                                 variant="outlined" 
                                 sx={{borderColor: "#888", color: "white"}}
@@ -137,6 +143,7 @@ export function ConnectButton() {
                                 Cancel
                             </Button>
                             <Button 
+                                size={isXs ? "small" : "medium"}
                                 type="submit"
                                 variant="contained"
                             >
