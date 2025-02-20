@@ -20,8 +20,8 @@ export function TimeSelect() {
     };
     
     return (
-        <div className="flex items-center gap-2">
-            <span className="text-dim-white text-lg leading-normal">{username}'s Life Calendars in</span>
+        <div className="flex flex-wrap justify-center items-center w-full gap-2">
+            <span className="text-dim-white text-nowrap text-lg leading-normal">{username}'s Life Calendars in</span>
             <Select
                 onChange={(e) => {handleChange(e); setValue(e.target.value as number)}}
                 className="!bg-tertiary rounded"

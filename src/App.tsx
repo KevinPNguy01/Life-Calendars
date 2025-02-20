@@ -38,7 +38,7 @@ function App() {
 						<UserContext.Provider value={{username, setUsername, leetcodeUsername, setLeetcodeUsername, githubUsername, setGithubUsername, stravaId, setStravaId}}>
 						<TimeContext.Provider value={{timePeriod, setTimePeriod}}>
 						<ViewContext.Provider value={{views, setView}}>
-							<nav className="w-full p-4 flex justify-end gap-4 items-center">
+							<nav className="w-full p-4 flex justify-end gap-1 items-center">
 								<SettingsButton/>
 								<ConnectButton/>
 							</nav>

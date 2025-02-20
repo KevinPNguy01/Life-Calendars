@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle/DialogTitle";
 import TextField from "@mui/material/TextField/TextField";
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ConnectWithStravaLogo from "../../assets/connect_with_strava.png";
 import GitHubLogo from "../../assets/github_logo_small.webp";
 import LeetCodeLogo from "../../assets/leetcode_logo_small.png";
@@ -15,6 +15,8 @@ import { defaultUser } from '../../constants/defaultUser';
 import { UserContext } from '../../contexts/UserContext';
 import { ViewContext } from '../../contexts/ViewContext';
 import { theme } from '../../theme';
+import { useSearchParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 const stravaLink = `
 https://www.strava.com/oauth/authorize
@@ -34,6 +36,20 @@ export function ConnectButton() {
     const {setView} = useContext(ViewContext);
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({username, leetcodeUsername, githubUsername});
+
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const code = searchParams.get('code');
+        (async () => {
+            if (code) {
+                setOpen(true);
+                toast("Connected Strava!", {
+                    hideProgressBar: true
+                });
+            }
+        })();
+    }, []);
 
     const handleOpen = () => {
         setOpen(true);
@@ -95,6 +111,7 @@ export function ConnectButton() {
 
     return (
         <>
+            <ToastContainer toastStyle={{ color: "white", backgroundColor: "#fc4c02" }}/>
             <Button
                 className="!rounded-full"
                 color="primary"
